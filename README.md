@@ -1,6 +1,6 @@
 # video-streaming-application-withfamily
 
-Media streaming platform(withfamily) built with Django. It supports movies, web series, short films, and podcasts, with user profiles, watch history, and a subscription model (free/basic/premium). Payments are integrated via Razorpay.
+Video streaming application(withfamily) built with Django. It supports movies, web series, short films, and podcasts, with user profiles, watch history, and a subscription model (free/basic/premium). Payments are integrated via Razorpay.
 
 ## Features
 - Content library with categories and access levels
@@ -13,6 +13,7 @@ Media streaming platform(withfamily) built with Django. It supports movies, web 
 - Django
 - SQLite (development)
 - Razorpay
+- Pillow
 
 ## Project Structure
 - `myproject/` Django project settings, URLs, WSGI/ASGI
