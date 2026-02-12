@@ -1,0 +1,7 @@
+Django
+razorpay
+python-dotenv
+dj-database-url
+whitenoise
+requests
+Pillow

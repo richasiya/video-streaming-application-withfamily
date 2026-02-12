@@ -1,0 +1,36 @@
+{% extends 'content/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="wf-surface p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+                         class="rounded-circle me-3"
+                         width="120" height="120"
+                         style="object-fit:cover;">
+
+                    <div>
+                        <h3 class="mb-0">{{ request.user.username }}</h3>
+                        <p class="text-muted mb-1">{{ request.user.email }}</p>
+                        <span class="badge-plan">{{ profile.subscription|title }}</span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <p><strong>Bio:</strong> {{ profile.bio|default:"Not added" }}</p>
+                <p><strong>Mobile:</strong> {{ profile.mobile|default:"Not added" }}</p>
+                <p><strong>DOB:</strong> {{ profile.dob|default:"Not added" }}</p>
+
+                <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <a href="{% url 'choose_plan' %}" class="wf-btn">Upgrade Plan</a>
+                    <a href="{% url 'edit_profile' %}" class="wf-btn-outline">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

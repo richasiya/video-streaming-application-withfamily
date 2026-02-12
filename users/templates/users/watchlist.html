@@ -1,0 +1,72 @@
+{% extends 'content/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="mb-1">Your Watchlist</h2>
+            <p class="text-muted mb-0">Keep track of titles you want to watch next.</p>
+        </div>
+        <a href="{% url 'history' %}" class="wf-btn-outline">View History</a>
+    </div>
+
+    <form class="row g-2 mb-4" method="get">
+        <div class="col-md-4">
+            <select name="type" class="form-select">
+                <option value="all" {% if content_type == 'all' %}selected{% endif %}>All Types</option>
+                <option value="movie" {% if content_type == 'movie' %}selected{% endif %}>Movies</option>
+                <option value="webseries" {% if content_type == 'webseries' %}selected{% endif %}>Web Series</option>
+                <option value="shortfilm" {% if content_type == 'shortfilm' %}selected{% endif %}>Short Films</option>
+                <option value="podcast" {% if content_type == 'podcast' %}selected{% endif %}>Podcasts</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="access" class="form-select">
+                <option value="all" {% if access_level == 'all' %}selected{% endif %}>All Access Levels</option>
+                <option value="free" {% if access_level == 'free' %}selected{% endif %}>Free</option>
+                <option value="basic" {% if access_level == 'basic' %}selected{% endif %}>Basic</option>
+                <option value="premium" {% if access_level == 'premium' %}selected{% endif %}>Premium</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button class="wf-btn w-100" type="submit">Apply Filters</button>
+        </div>
+    </form>
+
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="wf-card">
+                <div class="wf-media">
+                    {% if item.content.thumbnail %}
+                        <img src="{{ item.content.thumbnail.url }}">
+                    {% else %}
+                        <div style="height:180px;background:#222;color:#fff"
+                             class="d-flex align-items-center justify-content-center">
+                            {{ item.content.title }}
+                        </div>
+                    {% endif %}
+                    <div class="wf-overlay">
+                        <a href="{{ item.content.get_absolute_url }}" class="wf-btn">Watch</a>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">{{ item.content.title }}</h6>
+                        <span class="wf-tag">{{ item.content.access_level|title }}</span>
+                    </div>
+                    <p class="text-muted small mt-2">{{ item.content.description|truncatewords:12 }}</p>
+                    <form method="post" action="{% url 'watchlist_toggle' item.content.slug %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'watchlist' %}">
+                        <button class="wf-btn-outline w-100" type="submit">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">Your watchlist is empty.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

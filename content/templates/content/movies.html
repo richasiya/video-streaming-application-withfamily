@@ -1,0 +1,136 @@
+{% extends 'content/base.html' %}
+{% load access_tags %}
+{% load watchlist_tags %}
+
+{% block content %}
+<style>
+    .page-title { color: var(--wf-accent); }
+
+    .search-box{
+        background: var(--wf-surface-2);
+        border:1px solid #333;
+        color:#fff;
+        padding:10px 15px;
+        border-radius:25px;
+        width:100%;
+        max-width: 400px;
+        outline:none;
+    }
+    .search-box::placeholder{ color:#999; }
+
+    .ott-card{
+        background: var(--wf-surface);
+        border-radius:12px;
+        overflow:hidden;
+        transition:.3s;
+        height:100%;
+        display:flex;
+        flex-direction:column;
+    }
+    .ott-card:hover{ transform:scale(1.05); }
+
+    .poster{ position:relative; }
+    .poster img{ width:100%; height:175px; object-fit:cover; }
+
+    .overlay{
+        position:absolute; inset:0;
+        background:rgba(0,0,0,.75);
+        display:flex; align-items:center; justify-content:center;
+        opacity:0; transition:.3s;
+    }
+    .poster:hover .overlay{ opacity:1; }
+
+    .play-btn{
+        background: var(--wf-accent); color:#fff;
+        padding:15px 18px; border-radius:50%;
+        font-size:20px;
+    }
+    .login-btn{
+        background: var(--wf-accent); color:#fff;
+        padding:8px 16px; border-radius:20px;
+        text-decoration:none;
+    }
+
+    .card-info{ padding:12px; color:#fff; display:flex; flex-direction:column; flex:1; }
+    .card-info p{ color:#b5b5b5; font-size:13px; }
+    .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .card-title{ margin:0; line-height:1.25; min-height:2.5em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .card-info form{ margin-top:auto; }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-3 page-title"><i class="fas fa-film"></i> Movies</h2>
+
+    <!-- SEARCH -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <input type="text" id="movieSearch" class="search-box"
+                   placeholder="Search movies..." onkeyup="filterMovies()">
+        </div>
+    </div>
+
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-md-3 col-sm-6 mb-4 movie-card"
+             data-title="{{ movie.title|lower }}">
+
+            <div class="ott-card">
+                <div class="poster">
+                    {% if movie.thumbnail %}
+                        <img src="{{ movie.thumbnail.url }}">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center"
+                             style="height:260px;background:#333;color:white;">
+                            {{ movie.title }}
+                        </div>
+                    {% endif %}
+                    <div class="overlay">
+                        {% if user.is_authenticated %}
+                            {% if user|can_access:movie %}
+                                <a href="{{ movie.get_absolute_url }}" class="play-btn">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'choose_plan' %}" class="login-btn">Upgrade to Watch</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}?next={{ movie.get_absolute_url }}"
+                               class="login-btn">Login to Watch</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-head">
+                        <h6 class="card-title">{{ movie.title }}</h6>
+                        <span class="wf-tag">{{ movie.access_level|title }}</span>
+                    </div>
+                    <p>{{ movie.description|truncatewords:15 }}</p>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'watchlist_toggle' movie.slug %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            {% if user|in_watchlist:movie %}
+                                <button class="wf-btn-outline w-100" type="submit">Remove from Watchlist</button>
+                            {% else %}
+                                <button class="wf-btn w-100" type="submit">Add to Watchlist</button>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">No movies available.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function filterMovies(){
+    let q=document.getElementById("movieSearch").value.toLowerCase();
+    document.querySelectorAll(".movie-card").forEach(card=>{
+        card.style.display = card.dataset.title.includes(q) ? "block":"none";
+    });
+}
+</script>
+{% endblock %}

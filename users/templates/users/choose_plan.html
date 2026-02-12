@@ -1,0 +1,48 @@
+{% extends 'content/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="mb-2">Choose Your Plan</h2>
+        <p class="plan-muted">Upgrade anytime. Free plan gives limited access.</p>
+    </div>
+
+    <div class="plan-grid">
+        {% for plan in plans %}
+        <div class="plan-card">
+            {% if plan.key != 'free' %}
+                <span class="plan-badge">Most Popular</span>
+            {% endif %}
+            <h4 class="mb-0 plan-title">{{ plan.label }}</h4>
+            <div class="plan-price">
+                {% if plan.key == 'free' %}
+                    Free
+                {% else %}
+                    {{ currency }} {{ plan.amount_inr }} / mo
+                {% endif %}
+            </div>
+            <p class="plan-muted mb-2 plan-description">{{ plan.description }}</p>
+            <ul class="plan-features">
+                <li>Free: Watch selected titles</li>
+                <li>Basic: Unlock more content</li>
+                <li>Premium: Full access to everything</li>
+            </ul>
+
+            {% if plan.key == 'free' %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan" value="free">
+                    <button class="wf-btn-outline w-100" type="submit">Continue with Free</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan" value="{{ plan.key }}">
+                    <button class="wf-btn w-100" type="submit">Choose {{ plan.label }}</button>
+                </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

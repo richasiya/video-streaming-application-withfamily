@@ -1,0 +1,213 @@
+{% extends 'content/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #121212;
+        color: #cfcfcf;
+    }
+
+    /* HERO SECTION */
+    .hero-section {
+        background: linear-gradient(rgba(0,0,0,0.76), rgba(0,0,0,0.76)),
+                    url("{% static 'images/hero-logo.jpg' %}") center/cover;
+        padding: 100px 20px;
+        border-radius: 15px;
+        color: #ffffff;
+    }
+
+    /* MAIN HEADING */
+    .main-heading {
+        color: #e0e0e0;
+        letter-spacing: 1px;
+    }
+
+    /* BRAND TEXT */
+    .brand-text {
+        color: var(--wf-accent);
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(255, 107, 95, 0.4);
+    }
+
+    .hero-section p {
+        color: #b5b5b5;
+    }
+
+    /* CATEGORY CARD */
+    .category-card {
+        background-color: var(--wf-surface);
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .category-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+    }
+
+    .category-card i {
+        color: var(--wf-accent);
+    }
+
+    .category-card h5 {
+        color: #ffffff;
+        margin-top: 15px;
+    }
+
+    /* BUTTON */
+    .category-card .btn,
+    .hero-section .btn {
+        background-color: var(--wf-accent);
+        border: none;
+        color: #fff;
+        border-radius: 25px;
+        padding: 8px 20px;
+    }
+
+    .category-card .btn:hover,
+    .hero-section .btn:hover {
+        background-color: var(--wf-accent-2);
+    }
+</style>
+
+<div class="container mt-5">
+
+    <!-- HERO SECTION -->
+    <div class="hero-section text-center mb-5">
+        <h1 class="display-3 fw-bold main-heading">
+            Watch  movies,
+        </h1>
+
+        <p class="display-3 fw-bold main-heading">
+            series and more 
+        </p>
+
+        <a href="{% url 'movies' %}" class="btn btn-lg mt-3 px-4">
+            Start Watching
+        </a>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="row text-center">
+
+        <div class="col-md-3 mb-4">
+            <div class="card category-card p-4">
+                <i class="fas fa-film fa-3x"></i>
+                <h5>Movies</h5>
+                <a href="{% url 'movies' %}" class="btn mt-3">Browse Movies</a>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card category-card p-4">
+                <i class="fas fa-tv fa-3x"></i>
+                <h5>Web Series</h5>
+                <a href="{% url 'webseries' %}" class="btn mt-3">Browse Series</a>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card category-card p-4">
+                <i class="fas fa-video fa-3x"></i>
+                <h5>Short Films</h5>
+                <a href="{% url 'shortfilm' %}" class="btn mt-3">Browse Films</a>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card category-card p-4">
+                <i class="fas fa-share-alt fa-3x"></i>
+                <h5>Podcasts</h5>
+                <a href="{% url 'podcasts' %}" class="btn mt-3">Browse Episode</a>
+            </div>
+        </div>
+
+    </div>
+
+    {% if user.is_authenticated and recent_history %}
+    <div class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">Continue Watching</h3>
+            <a href="{% url 'history' %}" class="wf-btn-outline">View History</a>
+        </div>
+        <div class="row">
+            {% for entry in recent_history %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="wf-card">
+                    <div class="wf-media">
+                        {% if entry.content.thumbnail %}
+                            <img src="{{ entry.content.thumbnail.url }}">
+                        {% else %}
+                            <div style="height:180px;background:#222;color:#fff"
+                                 class="d-flex align-items-center justify-content-center">
+                                {{ entry.content.title }}
+                            </div>
+                        {% endif %}
+                        <div class="wf-overlay">
+                            <a href="{{ entry.content.get_absolute_url }}" class="wf-btn">Continue</a>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{ entry.content.title }}</h6>
+                            <span class="wf-tag">{{ entry.content.access_level|title }}</span>
+                        </div>
+                        <p class="text-muted small mt-2 mb-0">Last watched: {{ entry.last_watched_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="upgrade-banner mt-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <h4 class="mb-1">Unlock more with Basic or Premium</h4>
+                <p class="mb-0 text-muted">Free users can watch select titles. Upgrade anytime for full access.</p>
+            </div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'choose_plan' %}" class="wf-btn">Choose a Plan</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="wf-btn">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} 
+{% extends 'content/base.html' %} {% block content %} <div class="container mt-5"> <div class="row"> <div class="col-lg-8 mx-auto text-center"> <h1 class="display-4 mb-4">Welcome to withfamily</h1> <p class="lead mb-4">Discover amazing movies, web series, short films, and social content</p> <div class="row mt-5"> <div class="col-md-3 mb-4"> <div class="card h-100 shadow"> <div class="card-body text-center"> <i class="fas fa-film fa-3x text-primary mb-3"></i> <h5>Movies</h5> <a href="{% url 'movies' %}" class="btn btn-primary mt-2">Browse Movies</a> </div> </div> </div> <div class="col-md-3 mb-4"> <div class="card h-100 shadow"> <div class="card-body text-center"> <i class="fas fa-tv fa-3x text-primary mb-3"></i> <h5>Web Series</h5> <a href="{% url 'webseries' %}" class="btn btn-primary mt-2">Browse Series</a> </div> </div> </div> <div class="col-md-3 mb-4"> <div class="card h-100 shadow"> <div class="card-body text-center"> <i class="fas fa-video fa-3x text-primary mb-3"></i> <h5>Short Films</h5> <a href="{% url 'shortfilm' %}" class="btn btn-primary mt-2">Browse Films</a> </div> </div> </div> <div class="col-md-3 mb-4"> <div class="card h-100 shadow"> <div class="card-body text-center"> <i class="fas fa-share-alt fa-3x text-primary mb-3"></i> <h5>Social Content</h5> <a href="{% url 'socialcontent' %}" class="btn btn-primary mt-2">Browse Content</a> </div> </div> </div> </div> {# Latest section removed as requested. Featured content remains accessible from category pages. #} </div> </div> </div> {% endblock %} {% endcomment %}
+

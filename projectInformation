@@ -1,0 +1,55 @@
+Project Information
+===================
+
+Overview
+--------
+- Project: Django app with apps: `content` and `users`.
+- Purpose: Media streaming platform with movies, web series, short films, and podcasts.
+- Core pages: Home, category lists, watch page, watchlist, profiles, and history.
+- Authentication: Required to watch content (`login_required` in watch view).
+- Payments: Razorpay keys are present in settings.
+- Storage: SQLite database by default in dev.
+
+Structure (high level)
+----------------------
+- `myproject/`: Django project settings, URLs, WSGI.
+- `content/`: Content models, views, templates (watch page, home, etc.).
+- `users/`: User profiles, watch history.
+- `static/`: CSS and assets.
+- `media/`: Uploaded thumbnails and videos.
+
+Key Models
+----------
+- `Content`: title, description, content_type (movie/webseries/shortfilm/podcast), access_level, category, thumbnail, video_url, video_file, slug, timestamps.
+- `Category`: name.
+- `SiteConfig`: site_name and logo.
+
+Recent Changes I Made
+---------------------
+1) Watch Page UI/UX Enhancements
+- File: `content/templates/content/watch.html`
+- Added responsive mini-player behavior:
+  - Video shrinks to a fixed mini player when scrolling down.
+  - Returns to original size when scrolling back up.
+  - Sticky top mini player on mobile.
+- Added spacer to prevent layout flicker when switching to fixed position.
+- Added improved meta chips and action buttons.
+- Added “More Like This” suggestions section with cards.
+- Added “View All” button that links to the full list for the current content type.
+
+2) Related Content Suggestions
+- File: `content/views.py`
+- Added `related` queryset to the watch view:
+  - Now only pulls content from the same `content_type` (e.g., movies show only movies).
+- Passed `related` to the watch template.
+
+3) Suppressed 404s for favicon and Chrome devtools file
+- File: `myproject/urls.py`
+- Added routes that return 204 for:
+  - `/favicon.ico`
+  - `/.well-known/appspecific/com.chrome.devtools.json`
+
+Notes
+-----
+- If you want a real favicon instead of a 204 response, add a file in `static/` and include it in `base.html`.
+- If you want more suggestions or random ordering, we can update the `related` queryset.

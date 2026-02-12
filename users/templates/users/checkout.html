@@ -1,0 +1,58 @@
+{% extends 'content/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="wf-surface p-4 p-md-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <h3 class="mb-1">{{ plan_label }} Plan</h3>
+                <p class="text-muted mb-0">Complete your payment to activate full access.</p>
+            </div>
+            <div class="plan-price">{{ currency }} {{ amount_inr }} / mo</div>
+        </div>
+
+        <button id="rzp-button" class="wf-btn">Pay with Razorpay</button>
+
+        <form method="post" action="{% url 'payment_verify' %}" id="payment-verify-form">
+            {% csrf_token %}
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+            <input type="hidden" name="plan" value="{{ plan }}">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        key: "{{ razorpay_key }}",
+        amount: "{{ amount_inr|floatformat:0 }}00",
+        currency: "{{ currency }}",
+        name: "withfamily",
+        description: "{{ plan_label }} Plan",
+        order_id: "{{ order_id }}",
+        handler: function (response) {
+            document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+            document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+            document.getElementById("razorpay_signature").value = response.razorpay_signature;
+            document.getElementById("payment-verify-form").submit();
+        },
+        prefill: {
+            name: "{{ user.username }}",
+            email: "{{ user.email }}"
+        },
+        theme: {
+            color: "#e50914"
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    document.getElementById("rzp-button").onclick = function (e) {
+        rzp.open();
+        e.preventDefault();
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'content/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="mb-1">Watch History</h2>
+            <p class="text-muted mb-0">Recently watched titles and replays.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <form method="post" action="{% url 'clear_history' %}">
+                {% csrf_token %}
+                <button class="wf-btn-outline" type="submit">Clear History</button>
+            </form>
+            <a href="{% url 'watchlist' %}" class="wf-btn-outline">View Watchlist</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for entry in history %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="wf-card">
+                <div class="wf-media">
+                    {% if entry.content.thumbnail %}
+                        <img src="{{ entry.content.thumbnail.url }}">
+                    {% else %}
+                        <div style="height:180px;background:#222;color:#fff"
+                             class="d-flex align-items-center justify-content-center">
+                            {{ entry.content.title }}
+                        </div>
+                    {% endif %}
+                    <div class="wf-overlay">
+                        <a href="{{ entry.content.get_absolute_url }}" class="wf-btn">Watch Again</a>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">{{ entry.content.title }}</h6>
+                        <span class="wf-tag">{{ entry.content.access_level|title }}</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-1">Watched {{ entry.watch_count }} time{{ entry.watch_count|pluralize }}</p>
+                    <p class="text-muted small mb-0">Last: {{ entry.last_watched_at|date:"M d, Y H:i" }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">No watch history yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

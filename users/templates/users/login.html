@@ -1,0 +1,256 @@
+{% extends 'content/base.html' %}
+{% load form_extras %}
+
+{% block content %}
+<style>
+    .login-card {
+        background: #1a1a1a;
+        border-radius: 15px;
+        border: none;
+    }
+
+    .login-header {
+        background: transparent;
+        color: var(--wf-accent);
+        text-align: center;
+        border-bottom: none;
+    }
+
+    .login-header h4 {
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .form-label {
+        color: #cfcfcf;
+    }
+
+    .form-control {
+        background-color: #121212;
+        border: 1px solid #333;
+        color: #fff;
+    }
+
+    .form-control:focus {
+        background-color: #121212;
+        color: #fff;
+        border-color: var(--wf-accent);
+        box-shadow: none;
+    }
+
+    .btn-login {
+        background-color: var(--wf-accent);
+        border: none;
+        border-radius: 25px;
+        padding: 10px;
+        font-weight: 600;
+    }
+
+    .btn-login:hover {
+        background-color: var(--wf-accent-2);
+    }
+
+    /* 🔥 FIXED TEXT VISIBILITY */
+    .login-link {
+        color: #bdbdbd;   /* readable light gray */
+        font-size: 14px;
+    }
+
+    .login-link a {
+        color: var(--wf-accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card login-card shadow-lg">
+                <div class="card-header login-header">
+                    <h4>Login to withfamily</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ field.label }}</label>
+                                {{ field|add_class:"form-control" }}
+
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-login w-100 mt-3">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4 login-link">
+                        Don’t have an account?
+                        <a href="{% url 'register' %}">Register here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends 'content/base.html' %}
+{% load form_extras %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Login</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ field.label }}</label>
+                                {{ field|add_class:"form-control" }}
+                                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% endcomment %}
