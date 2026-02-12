@@ -1,4 +1,4 @@
-# withfamily
+# video-streaming-application-withfamily
 
 Media streaming platform(withfamily) built with Django. It supports movies, web series, short films, and podcasts, with user profiles, watch history, and a subscription model (free/basic/premium). Payments are integrated via Razorpay.
 
